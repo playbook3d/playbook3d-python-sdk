@@ -103,7 +103,7 @@ class TestPlaybookSDK(unittest.TestCase):
     def test_get_run_result(self):
         available_runs = self.playbook_client.get_user_runs()
         request = self.playbook_client.get_run_result(available_runs[0])
-        self.assertIsInstance(request, str) 
+        self.assertIsInstance(request, str)
 
     def tearDown(self):
         pass

@@ -159,32 +159,6 @@ class PlaybookClient :
             available_runs.append(current_run)
         return available_runs
 
-    def create_workflow(self,
-            name: str,
-            public: bool,
-            team_id: str,
-            is_external: bool,
-            public_url: Optional[str] = None,
-            canvas_type: Optional[int] = None,
-            workflow_url: Optional[str] = None,
-            workflow_api_url: Optional[str] = None,
-            s3_file_id: Optional[str] = None,
-            last_form_data: Optional[str] = None,
-    ) -> PlaybookWorkflow | None:
-        """
-        Creates a new workflow for selected user's team
-        :param name: Workflow name
-        :param public: is workflow public or not
-        :param team_id: Team ID
-        :param is_external: is workflow external or not
-        :param public_url: OPTIONAL Public URL
-        :param canvas_type: OPTIONAL Canvas Type
-        :param workflow_url: OPTIONAL Workflow URL
-        :param workflow_api_url: OPTIONAL Workflow API URL
-        :param s3_file_id: OPTIONAL File ID
-        :param last_form_data: OPTIONAL Last Form Data
-        :return: Created PlaybookWorkflow
-        """
 
     def create_team(self, team_name: str) -> PlaybookTeam | None:
         """
@@ -198,43 +172,6 @@ class PlaybookClient :
             new_team_response = new_team_request.json()
             return PlaybookTeam.from_json(new_team_response)
 
-    def update_workflow(self, workflow_id: str, new_workflow_data: dict) -> PlaybookTeam | None:
-        """
-        Creates a new Team for selected user
-        :param workflow_id: ID for workflow to update
-        :param new_workflow_data: New workflow data
-        :return: Updated PlaybookWorkflow
-        """
-
-    def update_team(self, team_id: str, new_team_data: dict) -> PlaybookTeam | None:
-        """
-        Creates a new Team for selected user
-        :param team_id: ID for workflow to update
-        :param new_team_data: New workflow data
-        :return: Updated PlaybookWorkflow
-        """
-
-    def update_user(self, user_id: str, new_user_data: dict) -> PlaybookTeam | None:
-        """
-        Creates a new Team for selected user
-        :param user_id: ID for workflow to update
-        :param new_user_data: New workflow data
-        :return: Updated PlaybookWorkflow
-        """
-
-    def delete_workflow(self, workflow_id: str) -> PlaybookWorkflow | None:
-        """
-        Deletes selected workflow
-        :param workflow_id: ID for selected workflow
-        :return: Deleted PlaybookWorkflow
-        """
-
-    def delete_team(self, team_id: str) -> PlaybookTeam | None:
-        """
-        Deletes selected team
-        :param team_id: ID for selected team
-        :return: Deleted PlaybookTeam
-        """
 
     def run_workflow(self, workflow: PlaybookWorkflow) -> Response | None:
         """
