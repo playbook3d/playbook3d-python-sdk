@@ -8,7 +8,7 @@ from playbookNetworkClient import PlaybookClient
 class TestPlaybookSDK(unittest.TestCase):
     def setUp(self):
         self.playbook_client = PlaybookClient()
-        self.playbook_client.set_api_key("45363bcf-4929-4129-8aea-c45621e85d56")
+        self.playbook_client.set_api_key("")
 
     def test_create_team(self):
         team_data = {
