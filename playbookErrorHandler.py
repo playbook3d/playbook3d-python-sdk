@@ -54,3 +54,9 @@ class RunResultRequestError(Exception):
     Run result error
     """
     pass
+
+class CancelRunRequestError(Exception):
+    """"
+    Canceling run result error
+    """
+    pass

@@ -276,3 +276,17 @@ class PlaybookClient :
             return result_request.json()['result']
         except exceptions.HTTPError as err:
             raise RunResultRequestError(err)
+
+    def cancel_run(self, run: PlaybookRun) -> Response:
+        """
+        Cancels an executing run on cloud GPU
+        :param run: Playbook run to cancel
+        :return: Response
+        """
+        run_id = run.run_id
+        team_id = run.team
+        try:
+            cancel_request = self.get_authenticated_request(f"{self.base_url}/cancel/{team_id}/{run_id}", method="POST")
+            return cancel_request.json()
+        except exceptions.HTTPError as err:
+            raise CancelRunRequestError(err)
