@@ -236,13 +236,16 @@ class PlaybookClient :
         :return: Deleted PlaybookTeam
         """
 
-    def run_workflow(self, workflow: PlaybookWorkflow) -> Response | None:
+    def run_workflow(self, workflow: PlaybookWorkflow, inputs:dict = None) -> Response | None:
         """
         Runs a workflow on cloud GPU
         :param workflow: PlaybookWorkflow
+        :param inputs: Optional inputs
         :return: run_id
         """
 
+        if inputs is None:
+            inputs = {}
         team = workflow.team_id
         workflow_id = workflow.workflow_id
 
@@ -251,7 +254,7 @@ class PlaybookClient :
         run_data: dict = {
             "id": workflow_id,
             "origin": 0,
-            "inputs": {}
+            "inputs": inputs
         }
         try:
             run_request = self.get_authenticated_request(f"{self.base_url}/run_workflow/{team}/{run_id}", method="POST", json=run_data)
