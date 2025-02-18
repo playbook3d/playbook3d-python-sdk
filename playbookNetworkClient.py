@@ -173,13 +173,16 @@ class PlaybookClient :
             return PlaybookTeam.from_json(new_team_response)
 
 
-    def run_workflow(self, workflow: PlaybookWorkflow) -> Response | None:
+    def run_workflow(self, workflow: PlaybookWorkflow, inputs:dict = None) -> Response | None:
         """
         Runs a workflow on cloud GPU
         :param workflow: PlaybookWorkflow
+        :param inputs: Optional inputs
         :return: run_id
         """
 
+        if inputs is None:
+            inputs = {}
         team = workflow.team_id
         workflow_id = workflow.workflow_id
 
@@ -188,7 +191,7 @@ class PlaybookClient :
         run_data: dict = {
             "id": workflow_id,
             "origin": 0,
-            "inputs": {}
+            "inputs": inputs
         }
         try:
             run_request = self.get_authenticated_request(f"{self.base_url}/run_workflow/{team}/{run_id}", method="POST", json=run_data)
@@ -210,3 +213,17 @@ class PlaybookClient :
             return result_request.json()['result']
         except exceptions.HTTPError as err:
             raise RunResultRequestError(err)
+
+    def cancel_run(self, run: PlaybookRun) -> Response:
+        """
+        Cancels an executing run on cloud GPU
+        :param run: Playbook run to cancel
+        :return: Response
+        """
+        run_id = run.run_id
+        team_id = run.team
+        try:
+            cancel_request = self.get_authenticated_request(f"{self.base_url}/cancel/{team_id}/{run_id}", method="POST")
+            return cancel_request.json()
+        except exceptions.HTTPError as err:
+            raise CancelRunRequestError(err)
