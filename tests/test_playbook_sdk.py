@@ -96,6 +96,14 @@ class TestPlaybookSDK(unittest.TestCase):
     #    self.assertEqual(request.status_code, 200)
     #    request.raise_for_status()
 
+    def test_run_workflow_with_overrides(self):
+        available_workflows = self.playbook_client.get_user_workflows()
+        self.assertIsInstance(available_workflows[0], PlaybookWorkflow)
+        test_inputs = {}
+        request = self.playbook_client.run_workflow(available_workflows[1], inputs=test_inputs)
+        self.assertEqual(request.status_code, 200)
+        request.raise_for_status()
+
     def test_get_runs(self):
         available_runs = self.playbook_client.get_user_runs()
         self.assertIsInstance(available_runs[0], PlaybookRun)
@@ -103,7 +111,12 @@ class TestPlaybookSDK(unittest.TestCase):
     def test_get_run_result(self):
         available_runs = self.playbook_client.get_user_runs()
         request = self.playbook_client.get_run_result(available_runs[0])
-        self.assertIsInstance(request, str) 
+        self.assertIsInstance(request, str)
+
+    def test_cancel_run(self):
+        available_runs = self.playbook_client.get_user_runs()
+        request = self.playbook_client.cancel_run(available_runs[0])
+        self.assertIsInstance(request, str)
 
     def tearDown(self):
         pass

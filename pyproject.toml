@@ -1,0 +1,29 @@
+[project]
+name = "playbook3d"
+version = "0.0.3"
+authors = [
+  { name="Alex Carrizosa", email="alex@playbook3d.com" },
+]
+description = "A python package used to interface with Playbook3d's API"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = {file = "LICENSE"}
+dynamic = ["dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/playbook3d/playbook3d-python-sdk"
+Issues = "https://github.com/playbook3d/playbook3d-python-sdk/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/playbook3d"]
+
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]

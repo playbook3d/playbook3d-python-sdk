@@ -1,6 +1,6 @@
 import json
 
-from playbookUser import PlaybookUser
+from .playbookUser import PlaybookUser
 
 
 class PlaybookWorkflow:
@@ -91,7 +91,7 @@ class PlaybookWorkflow:
             "public_url": self.public_url,
             "cover": self.cover,
             "modal_app_ids": self.modal_app_ids,
-            "editing_user": self.editing_user.to_json(),
+            "editing_user":  self.editing_user.to_json() if self.editing_user is not None else None,
             "editing_user_id": self.editing_user_id
         })
 

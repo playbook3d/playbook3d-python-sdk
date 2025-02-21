@@ -1,15 +1,14 @@
-import os
 import requests
 import jwt.utils
 import json
 
 
-from playbookErrorHandler import *
-from playbookUser import PlaybookUser
-from playbookWorkflow import PlaybookWorkflow
-from playbookTeam import PlaybookTeam
-from playbookRun import PlaybookRun
-from playbookPrivateModel import PlaybookPrivateModel
+from .playbookErrorHandler import *
+from .playbookUser import PlaybookUser
+from .playbookWorkflow import PlaybookWorkflow
+from .playbookTeam import PlaybookTeam
+from .playbookRun import PlaybookRun
+from .playbookPrivateModel import PlaybookPrivateModel
 
 from requests import exceptions, Response
 from typing import List, Literal, Optional
@@ -25,8 +24,9 @@ class PlaybookClient :
     current_user: PlaybookUser = None
 
     def __init__(self) -> None:
-        self.base_url = os.environ.get("BASE_URL")
-        self.accounts_url = os.environ.get("BASE_ACCOUNTS_URL")
+        self.base_url = ""
+        self.accounts_url = ""
+        self.x_api_key = ""
 
     def set_api_key(self, api_key: str) -> None:
         """
@@ -34,6 +34,20 @@ class PlaybookClient :
         :param api_key: UUID
         """
         self.api_key = api_key
+        if self.api_key is not None:
+            self.get_secrets()
+
+    def get_secrets(self):
+        try:
+            if self.api_key is None:
+                raise APIKeyNotAvailable("API key not set")
+            secrets = requests.get(f"https://dev-api.playbook3d.com/get-sdk-secrets/{self.api_key}").json()
+            self.base_url = secrets["BASE_URL"]
+            self.accounts_url = secrets["ACCOUNTS_URL"]
+            self.x_api_key = secrets["API_KEY"]
+        except exceptions.HTTPError as err:
+            raise InvalidAPITokenRequest(err)
+
 
     def set_current_user(self, user: PlaybookUser) -> None:
         """
@@ -47,11 +61,10 @@ class PlaybookClient :
         Internal method used to get a user's token
         :return: User's JWT
         """
-        base_url = os.environ.get("BASE_ACCOUNTS_URL")
         try:
             if self.api_key is None:
                 raise APIKeyNotAvailable("API key not set")
-            token_request = requests.get(url=f"{base_url}/token-wrapper/get-tokens/{self.api_key}")
+            token_request = requests.get(url=f"{self.accounts_url}/token-wrapper/get-tokens/{self.api_key}")
             return token_request.json()["access_token"]
         except exceptions.HTTPError as err:
             raise InvalidAPITokenRequest(err)
@@ -71,7 +84,7 @@ class PlaybookClient :
         if token is not None:
             headers = kwargs.pop("headers", {})
             headers["Authorization"] = f"Bearer {token}"
-            headers["x-api-key"] = os.environ.get("API_KEY")
+            headers["x-api-key"] = self.x_api_key
             request_func = getattr(requests, method.lower())
             authenticated_request = request_func(request, headers=headers, **kwargs)
             if authenticated_request.status_code != 200:
@@ -284,7 +297,7 @@ class PlaybookClient :
         :return: Response
         """
         run_id = run.run_id
-        team_id = run.team
+        team_id = run.team.team_id
         try:
             cancel_request = self.get_authenticated_request(f"{self.base_url}/cancel/{team_id}/{run_id}", method="POST")
             return cancel_request.json()

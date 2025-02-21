@@ -1,8 +1,8 @@
 import json
 
-from playbookTeam import PlaybookTeam
-from playbookUser import PlaybookUser
-from playbookWorkflow import PlaybookWorkflow
+from .playbookTeam import PlaybookTeam
+from .playbookUser import PlaybookUser
+from .playbookWorkflow import PlaybookWorkflow
 
 
 class PlaybookRun:

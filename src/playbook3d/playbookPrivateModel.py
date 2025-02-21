@@ -1,7 +1,6 @@
 import json
 
-from playbookTeam import PlaybookTeam
-
+from .playbookTeam import PlaybookTeam
 
 class PlaybookPrivateModel:
     def __init__(

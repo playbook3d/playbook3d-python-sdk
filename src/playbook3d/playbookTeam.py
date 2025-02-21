@@ -1,8 +1,8 @@
 import json
 from typing import Optional, List
 
-from playbookUser import PlaybookUser
-from playbookWorkflow import PlaybookWorkflow
+from .playbookUser import PlaybookUser
+from .playbookWorkflow import PlaybookWorkflow
 
 
 class PlaybookTeam:
@@ -56,7 +56,7 @@ class PlaybookTeam:
         members = [PlaybookUser.from_json(members_data) for members_data in members_data if isinstance(members_data, dict)]
 
         private_models_data = json_data.get('private_models', [])
-        from playbookPrivateModel import PlaybookPrivateModel
+        from .playbookPrivateModel import PlaybookPrivateModel
         private_models = [PlaybookPrivateModel.from_json(private_models_data) for private_models_data in private_models_data if isinstance(private_models_data, dict)]
 
         workflows_data = json_data.get('workflows', [])
