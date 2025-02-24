@@ -1,3 +1,5 @@
+import os.path
+
 import requests
 import jwt.utils
 import json
@@ -11,7 +13,7 @@ from .playbookRun import PlaybookRun
 from .playbookPrivateModel import PlaybookPrivateModel
 
 from requests import exceptions, Response
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Union
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -303,3 +305,82 @@ class PlaybookClient :
             return cancel_request.json()
         except exceptions.HTTPError as err:
             raise CancelRunRequestError(err)
+
+    def upload_image_to_playbook(self, image: Union[str, bytes]):
+        """
+        Uploads an image to playbook for usage within our nodes
+        :param image: Image to upload, either bytes or str
+        """
+        try:
+            if isinstance(image, str):
+                if not os.path.exists(image):
+                    raise FileNotFoundError(f"File {image} does not exist")
+
+                with open(image, "rb") as image_file:
+                    image_data = image_file.read()
+
+                files = {"image": ('image.jpg', image_data, "image/jpeg")}
+
+            elif isinstance(image, bytes):
+                image_data = image
+                files = {"image": ('image.jpg', image_data, "image/jpeg")}
+
+            else:
+                raise TypeError("Image must be either bytes or str")
+
+            response = self.get_authenticated_request(f"{self.accounts_url}/upload", method="POST", files=files)
+
+            if response.status_code != 200:
+                print(f"Error while uploading image to playbook: {response}")
+                return None
+
+            return response
+        except FileNotFoundError as e:
+            print(f"File not found: {e}")
+            return None
+        except TypeError as e:
+            print(f"Type error, image must be a path or a binary: {e}")
+            return None
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {e}")
+            return None
+
+
+    def upload_video_to_playbook(self, video: Union[str, bytes]):
+        """
+        Uploads a video file to playbook for usage within our nodes
+        :param video: Video to upload, either bytes or str
+        """
+        try:
+            if isinstance(video, str):
+                if not os.path.exists(video):
+                    raise FileNotFoundError(f"File {video} does not exist")
+
+                with open(video, "rb") as video_file:
+                    video_data = video_file.read()
+
+                files = {"video": ('video.mp4', video_data, "video/mp4")}
+
+            elif isinstance(video, bytes):
+                video_data = video
+                files = {"video": ('video.mp4', video_data, "video/mp4")}
+
+            else:
+                raise TypeError("Video must be either bytes or str")
+
+            response = self.get_authenticated_request(f"{self.accounts_url}/upload", method="POST", files=files)
+
+            if response.status_code != 200:
+                print(f"Error while uploading video to playbook: {response}")
+                return None
+
+            return response
+        except FileNotFoundError as e:
+            print(f"File not found: {e}")
+            return None
+        except TypeError as e:
+            print(f"Type error, video must be a path or a binary: {e}")
+            return None
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {e}")
+            return None
