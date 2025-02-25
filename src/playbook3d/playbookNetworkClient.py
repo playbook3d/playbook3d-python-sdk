@@ -39,7 +39,7 @@ class PlaybookClient :
         if self.api_key is not None:
             self.get_secrets()
 
-    def get_secrets(self):
+    def get_secrets(self) -> None:
         try:
             if self.api_key is None:
                 raise APIKeyNotAvailable("API key not set")
@@ -71,7 +71,7 @@ class PlaybookClient :
         except exceptions.HTTPError as err:
             raise InvalidAPITokenRequest(err)
 
-    def get_authenticated_request(self, request: str, method: Literal["GET", "POST", "PUT", "DELETE"], **kwargs) -> Response | None:
+    def get_authenticated_request(self, request: str, method: Literal["GET", "POST", "PUT", "DELETE"], **kwargs) -> Optional[Response]:
         """
         Sends an authenticated GET request for playbook API usage
         :param request: url for request
@@ -201,7 +201,7 @@ class PlaybookClient :
         :return: Created PlaybookWorkflow
         """
 
-    def create_team(self, team_name: str) -> PlaybookTeam | None:
+    def create_team(self, team_name: str) -> Optional[PlaybookTeam]:
         """
         Creates a new Team for selected user
         :param team_name: New team name
@@ -213,7 +213,7 @@ class PlaybookClient :
             new_team_response = new_team_request.json()
             return PlaybookTeam.from_json(new_team_response)
 
-    def update_workflow(self, workflow_id: str, new_workflow_data: dict) -> PlaybookTeam | None:
+    def update_workflow(self, workflow_id: str, new_workflow_data: dict) -> Optional[PlaybookTeam]:
         """
         Creates a new Team for selected user
         :param workflow_id: ID for workflow to update
@@ -221,7 +221,7 @@ class PlaybookClient :
         :return: Updated PlaybookWorkflow
         """
 
-    def update_team(self, team_id: str, new_team_data: dict) -> PlaybookTeam | None:
+    def update_team(self, team_id: str, new_team_data: dict) -> Optional[PlaybookTeam]:
         """
         Creates a new Team for selected user
         :param team_id: ID for workflow to update
@@ -229,7 +229,7 @@ class PlaybookClient :
         :return: Updated PlaybookWorkflow
         """
 
-    def update_user(self, user_id: str, new_user_data: dict) -> PlaybookTeam | None:
+    def update_user(self, user_id: str, new_user_data: dict) -> Optional[PlaybookTeam]:
         """
         Creates a new Team for selected user
         :param user_id: ID for workflow to update
@@ -237,21 +237,21 @@ class PlaybookClient :
         :return: Updated PlaybookWorkflow
         """
 
-    def delete_workflow(self, workflow_id: str) -> PlaybookWorkflow | None:
+    def delete_workflow(self, workflow_id: str) -> Optional[PlaybookWorkflow]:
         """
         Deletes selected workflow
         :param workflow_id: ID for selected workflow
         :return: Deleted PlaybookWorkflow
         """
 
-    def delete_team(self, team_id: str) -> PlaybookTeam | None:
+    def delete_team(self, team_id: str) -> Optional[PlaybookTeam]:
         """
         Deletes selected team
         :param team_id: ID for selected team
         :return: Deleted PlaybookTeam
         """
 
-    def run_workflow(self, workflow: PlaybookWorkflow, inputs:dict = None) -> Response | None:
+    def run_workflow(self, workflow: PlaybookWorkflow, inputs:dict = None) -> Optional[Response]:
         """
         Runs a workflow on cloud GPU
         :param workflow: PlaybookWorkflow
@@ -277,7 +277,7 @@ class PlaybookClient :
         except exceptions.HTTPError as err:
             raise RunRequestError(err)
 
-    def get_run_result(self, run: PlaybookRun) -> str | None:
+    def get_run_result(self, run: PlaybookRun) -> Optional[str]:
         """
         Runs a workflow on cloud GPU
         :param run: Playbook run
@@ -306,7 +306,7 @@ class PlaybookClient :
         except exceptions.HTTPError as err:
             raise CancelRunRequestError(err)
 
-    def upload_image_to_playbook(self, image: Union[str, bytes]):
+    def upload_image_to_playbook(self, image: Union[str, bytes], run_id: int = 0, node_id: int = 0) -> Optional[Response]:
         """
         Uploads an image to playbook for usage within our nodes
         :param image: Image to upload, either bytes or str
@@ -328,7 +328,7 @@ class PlaybookClient :
             else:
                 raise TypeError("Image must be either bytes or str")
 
-            response = self.get_authenticated_request(f"{self.accounts_url}/upload", method="POST", files=files)
+            response = self.get_authenticated_request(f"{self.accounts_url}/upload-assets/{run_id}/{node_id}", method="POST", files=files)
 
             if response.status_code != 200:
                 print(f"Error while uploading image to playbook: {response}")
@@ -346,7 +346,7 @@ class PlaybookClient :
             return None
 
 
-    def upload_video_to_playbook(self, video: Union[str, bytes]):
+    def upload_video_to_playbook(self, video: Union[str, bytes], run_id: int = 0, node_id: int = 0) -> Optional[Response]:
         """
         Uploads a video file to playbook for usage within our nodes
         :param video: Video to upload, either bytes or str
@@ -368,7 +368,7 @@ class PlaybookClient :
             else:
                 raise TypeError("Video must be either bytes or str")
 
-            response = self.get_authenticated_request(f"{self.accounts_url}/upload", method="POST", files=files)
+            response = self.get_authenticated_request(f"{self.accounts_url}/upload-assets/{run_id}/{node_id}", method="POST", files=files)
 
             if response.status_code != 200:
                 print(f"Error while uploading video to playbook: {response}")

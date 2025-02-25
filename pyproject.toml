@@ -1,6 +1,6 @@
 [project]
 name = "playbook3d"
-version = "0.0.3"
+version = "0.0.5"
 authors = [
   { name="Alex Carrizosa", email="alex@playbook3d.com" },
 ]
