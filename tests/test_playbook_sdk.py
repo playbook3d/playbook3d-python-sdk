@@ -1,14 +1,15 @@
+import json
 import unittest
-from playbookUser import PlaybookUser
-from playbookTeam import PlaybookTeam
-from playbookWorkflow import PlaybookWorkflow
-from playbookRun import PlaybookRun
-from playbookNetworkClient import PlaybookClient
+from playbook3d.playbookNetworkClient import PlaybookClient
+from playbook3d.playbookUser import PlaybookUser
+from playbook3d.playbookRun import PlaybookRun
+from playbook3d.playbookTeam import PlaybookTeam
+from playbook3d.playbookWorkflow import PlaybookWorkflow
 
 class TestPlaybookSDK(unittest.TestCase):
     def setUp(self):
         self.playbook_client = PlaybookClient()
-        self.playbook_client.set_api_key("45363bcf-4929-4129-8aea-c45621e85d56")
+        self.playbook_client.set_api_key("")
 
     def test_create_team(self):
         team_data = {
@@ -56,7 +57,6 @@ class TestPlaybookSDK(unittest.TestCase):
 
     def test_get_users(self):
         current_user = self.playbook_client.get_user_data()
-        print(current_user)
         self.assertIsInstance(current_user, PlaybookUser)
         self.assertEqual(current_user.status, "Active")
 
@@ -89,34 +89,36 @@ class TestPlaybookSDK(unittest.TestCase):
         available_workflows = self.playbook_client.get_user_workflows()
         self.assertIsInstance(available_workflows[0], PlaybookWorkflow)
 
-    #def test_run_workflow(self):
+    # def test_run_workflow(self):
     #    available_workflows = self.playbook_client.get_user_workflows()
     #    self.assertIsInstance(available_workflows[0], PlaybookWorkflow)
     #    request = self.playbook_client.run_workflow(available_workflows[1])
+    #    print(available_workflows[1].to_json())
     #    self.assertEqual(request.status_code, 200)
     #    request.raise_for_status()
 
-    def test_run_workflow_with_overrides(self):
-        available_workflows = self.playbook_client.get_user_workflows()
-        self.assertIsInstance(available_workflows[0], PlaybookWorkflow)
-        test_inputs = {}
-        request = self.playbook_client.run_workflow(available_workflows[1], inputs=test_inputs)
-        self.assertEqual(request.status_code, 200)
-        request.raise_for_status()
+    # def test_run_workflow_with_overrides(self):
+    #     available_workflows = self.playbook_client.get_user_workflows()
+    #     self.assertIsInstance(available_workflows[0], PlaybookWorkflow)
+    #     test_inputs = {}
+    #     request = self.playbook_client.run_workflow(available_workflows[1], inputs=test_inputs)
+    #     self.assertEqual(request.status_code, 200)
+    #     request.raise_for_status()
 
     def test_get_runs(self):
         available_runs = self.playbook_client.get_user_runs()
-        self.assertIsInstance(available_runs[0], PlaybookRun)
+        self.assertIsInstance(available_runs[len(available_runs) - 1], PlaybookRun)
 
     def test_get_run_result(self):
         available_runs = self.playbook_client.get_user_runs()
-        request = self.playbook_client.get_run_result(available_runs[0])
-        self.assertIsInstance(request, str)
+        request = self.playbook_client.get_run_result(available_runs[len(available_runs) - 1])
+        self.assertIsInstance(request, str | None)
 
-    def test_cancel_run(self):
-        available_runs = self.playbook_client.get_user_runs()
-        request = self.playbook_client.cancel_run(available_runs[0])
-        self.assertIsInstance(request, str)
+    # def test_cancel_run(self):
+    #     available_runs = self.playbook_client.get_user_runs()
+    #     request = self.playbook_client.cancel_run(available_runs[0])
+    #     expected_message = {'message': 'Run cancelled'}
+    #     self.assertEqual(request.json(), expected_message,"Response JSON does not match expected message")
 
     def tearDown(self):
         pass

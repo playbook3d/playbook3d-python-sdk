@@ -260,7 +260,7 @@ class PlaybookClient :
         """
 
         if inputs is None:
-            inputs = {}
+            inputs = dict()
         team = workflow.team_id
         workflow_id = workflow.workflow_id
 
