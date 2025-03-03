@@ -185,7 +185,7 @@ class PlaybookClient :
             workflow_api_url: Optional[str] = None,
             s3_file_id: Optional[str] = None,
             last_form_data: Optional[str] = None,
-    ) -> PlaybookWorkflow | None:
+    ) -> Optional[PlaybookWorkflow]:
         """
         Creates a new workflow for selected user's team
         :param name: Workflow name

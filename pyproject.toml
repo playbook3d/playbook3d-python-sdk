@@ -1,8 +1,8 @@
 [project]
 name = "playbook3d"
-version = "0.0.5"
+version = "0.0.6"
 authors = [
-  { name="Alex Carrizosa", email="alex@playbook3d.com" },
+  { name="Playbook3d", email="skylarx@playbook3d.com" },
 ]
 description = "A python package used to interface with Playbook3d's API"
 readme = "README.md"
@@ -17,6 +17,7 @@ dynamic = ["dependencies"]
 [project.urls]
 Homepage = "https://github.com/playbook3d/playbook3d-python-sdk"
 Issues = "https://github.com/playbook3d/playbook3d-python-sdk/issues"
+Documentation = "https://docs.playbook3d.com"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/playbook3d"]
